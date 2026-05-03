@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include<string>
 #include <vector>
 using namespace std;
@@ -57,60 +57,148 @@ public:
     ~Stack() {
         delete[]newstack;
     }
+    //Q1 Function 
+    void calculator() {
 
-};
+        int result = 0;
+        int sign = 1;
+        int num = 0;
 
+        string s;
 
-// Qes2
-int main() {
-    string s;
-    cout << "enter array like [1,2,3]:" << endl;
-    getline(cin, s);
+        cout << "enter equation" << endl;
+        getline(cin, s);
 
-    vector<int> arr;
-    int num = 0;
-    bool building = false;
+        Stack st(s.length());
 
-    for (int i = 0; i < s.length(); i++) {
-        if (isdigit(s[i])) {
-            num = num * 10 + (s[i] - '0');
-            building = true;
-        }
-        else {
-            if (building) {
-                arr.push_back(num);
+        for (int i = 0; i < s.length(); i++) {
+
+            if (s[i] == ' ' || s[i] == '"')
+                continue;
+
+            else if (isdigit(s[i])) {
+                num = num * 10 + (s[i] - '0');
+            }
+
+            else if (s[i] == '+') {
+                result += sign * num;
                 num = 0;
-                building = false;
+                sign = 1;
+            }
+
+            else if (s[i] == '-') {
+                result += sign * num;
+                num = 0;
+                sign = -1;
+            }
+
+            else if (s[i] == '(') {
+
+                st.push(result);
+                st.push(sign);
+
+                result = 0;
+                sign = 1;
+            }
+
+            else if (s[i] == ')') {
+
+                result += sign * num;
+                num = 0;
+
+                int prevSign = st.pop();
+                int prevResult = st.pop();
+
+                result = prevResult + prevSign * result;
             }
         }
+
+        result += sign * num;
+
+        cout << "result = " << result << endl;
     }
 
-    int size = arr.size();
 
-    vector <int > result(size, -1);
-    Stack st(size);
-    for (int i = 0; i < size; i++)
-        result[i] = -1;
+    //Q2 Function 
+    void nextGreaterElement() {
 
-    for (int i = 0; i < size * 2; i++) {
+        string s;
 
-        while (!st.isEmpty() && arr[st.peek()] < arr[i % size]) {
-            result[st.peek()] = arr[i % size];
-            st.pop();
+        cout << "enter array like [1,2,3]:" << endl;
+        getline(cin, s);
 
+        vector<int> arr;
+
+        int num = 0;
+        bool building = false;
+
+        for (int i = 0; i < s.length(); i++) {
+
+            if (isdigit(s[i])) {
+
+                num = num * 10 + (s[i] - '0');
+                building = true;
+            }
+
+            else {
+
+                if (building) {
+                    arr.push_back(num);
+                    num = 0;
+                    building = false;
+                }
+            }
         }
-        if (i < size) {
-            st.push(i);
+
+        int size = arr.size();
+
+        vector<int> result(size, -1);
+
+        Stack st(size);
+
+        for (int i = 0; i < size * 2; i++) {
+
+            while (!st.isEmpty() &&
+                arr[st.peek()] < arr[i % size]) {
+
+                result[st.peek()] = arr[i % size];
+                st.pop();
+            }
+
+            if (i < size) {
+                st.push(i);
+            }
         }
 
+        cout << "result: [";
+
+        for (int i = 0; i < size; i++) {
+
+            cout << result[i];
+
+            if (i < size - 1)
+                cout << ",";
+        }
+
+        cout << "]" << endl;
     }
-    cout << "result: [";
-    for (int i = 0; i < size; i++) {
-        cout << result[i];
-        if (i < size - 1) {
-            cout << ",";
-        }
-    }
-    cout << "]";
+
+};
+int main() {
+    int choice;
+
+    cout << "1- Calculator" << endl;
+    cout << "2- Next Greater Element" << endl;
+
+    cin >> choice;
+    cin.ignore();
+
+    Stack s(100);
+
+    if (choice == 1)
+        s.calculator();
+
+    else if (choice == 2)
+        s.nextGreaterElement();
 
 }
