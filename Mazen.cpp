@@ -57,18 +57,18 @@ using namespace std;
 vector<int> nextGreaterElements(vector<int>& nums) {
     int n = nums.size();
     vector<int> result(n, -1);
-    stack<int> stake;
+    stack<int> stack;
 
     for (int i = 0; i < 2 * n; ++i) {
         int currentIndex = i % n;
 
-        while (!stake.empty() && nums[currentIndex] > nums[stake.top()]) {
-            result[stake.top()] = nums[currentIndex];
-            stake.pop();
+        while (!stack.empty() && nums[currentIndex] > nums[stack.top()]) {
+            result[stack.top()] = nums[currentIndex];
+            stack.pop();
         }
 
         if (i < n) {
-            stake.push(currentIndex);
+            stack.push(currentIndex);
         }
     }
 
