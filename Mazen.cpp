@@ -1,0 +1,100 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+/* Part A
+// Recursive function similar to Fibonacci
+int hello_recursive(int n) {
+    // Base case: constant time
+    if (n <= 1) return 1;
+
+    // Two recursive calls
+    return hello_recursive(n - 1) + hello_recursive(n - 2);
+}
+Explanation:
+Each call makes TWO recursive calls (n-1) and (n-2),
+exactly like the Fibonacci recurrence
+
+Recurrence relation:
+    T(n) = T(n-1) + T(n-2) + O(1)
+
+  This expands into a binary tree of calls.
+  At depth d the tree has up to 2^d nodes.
+  The maximum depth is n, so the total nodes ≈ 2^n.
+
+  Time Complexity: O(2^n)   : exponential
+  Space Complexity: O(n)    : maximum recursion depth (call stack)
+  _________________________________________________________________
+  Snippet B:
+
+  void test(int n) {
+    int i = n;
+
+    // Outer loop: runs log(n) times
+    while (i > 1) {
+
+        int j = 1;
+
+        // Inner loop: doubles each time → log(i)
+        while (j < i) {
+            j *= 2;
+        }
+
+        // i is halved each iteration → log(n)
+        i /= 2;
+    }
+}
+Explanation:
+Outer loop runs log(n) times (because i is divided by 2)
+Inner loop runs log(i) ≈ log(n) times (because j doubles)
+
+Time Complexity: O(log n × log n) = O((log n)^2)
+
+Space Complexity: O(1) (only a few variables, no extra data structures)
+*/
+
+using namespace std;
+
+vector<int> nextGreaterElements(vector<int>& nums) {
+    int n = nums.size();
+    vector<int> result(n, -1);
+    stack<int> stake;
+
+    for (int i = 0; i < 2 * n; ++i) {
+        int currentIndex = i % n;
+
+        while (!stake.empty() && nums[currentIndex] > nums[stake.top()]) {
+            result[stake.top()] = nums[currentIndex];
+            stake.pop();
+        }
+
+        if (i < n) {
+            stake.push(currentIndex);
+        }
+    }
+
+    return result;
+}
+
+void printVector(const vector<int>& v) {
+    cout << "Output: [";
+    for (size_t i = 0; i < v.size(); ++i) {
+        cout << v[i] << (i == v.size() - 1 ? "" : ", ");
+    }
+    cout << "]" << endl;
+}
+
+int main() {
+    vector<int> nums1 = { 5, 5, 5 };
+    printVector(nextGreaterElements(nums1));
+
+    vector<int> nums2 = { 1, 2, 3, 4 };
+    printVector(nextGreaterElements(nums2));
+
+    vector<int> nums3 = { 3, 1, 2 };
+    printVector(nextGreaterElements(nums3));
+
+    return 0;
+
+    //Time Complexity: O(n) - Each element is pushed and popped at most once
+    //Space Complexity: O(n) - The stack can hold up to n indices in the worst case
+}
