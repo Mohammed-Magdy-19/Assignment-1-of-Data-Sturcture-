@@ -52,49 +52,63 @@ Time Complexity: O(log n × log n) = O((log n)^2)
 Space Complexity: O(1) (only a few variables, no extra data structures)
 */
 
+
 using namespace std;
 
-vector<int> nextGreaterElements(vector<int>& nums) {
-    int n = nums.size();
-    vector<int> result(n, -1);
-    stack<int> stack;
+class NextGreaterElement {
+private:
+    vector<int> nums;
+    vector<int> result;
 
-    for (int i = 0; i < 2 * n; ++i) {
-        int currentIndex = i % n;
+    void compute() {
+        int n = nums.size();
+        result.assign(n, -1);
+        stack<int> stack;
 
-        while (!stack.empty() && nums[currentIndex] > nums[stack.top()]) {
-            result[stack.top()] = nums[currentIndex];
-            stack.pop();
-        }
+        for (int i = 0; i < 2 * n; ++i) {
+            int currentIndex = i % n;
 
-        if (i < n) {
-            stack.push(currentIndex);
+            while (!stack.empty() && nums[currentIndex] > nums[stack.top()]) {
+                result[stack.top()] = nums[currentIndex];
+                stack.pop();
+            }
+
+            if (i < n) {
+                stack.push(currentIndex);
+            }
         }
     }
 
-    return result;
-}
-
-void printVector(const vector<int>& v) {
-    cout << "Output: [";
-    for (size_t i = 0; i < v.size(); ++i) {
-        cout << v[i] << (i == v.size() - 1 ? "" : ", ");
+public:
+    NextGreaterElement(const vector<int>& inputNums) : nums(inputNums) {
+        compute();
     }
-    cout << "]" << endl;
-}
+
+    vector<int> getResult() const {
+        return result;
+    }
+
+    void printResult() const {
+        cout << "Output: [";
+        for (size_t i = 0; i < result.size(); ++i) {
+            cout << result[i] << (i == result.size() - 1 ? "" : ", ");
+        }
+        cout << "]" << endl;
+    }
+};
 
 int main() {
-    vector<int> nums1 = { 5, 5, 5 };
-    printVector(nextGreaterElements(nums1));
+    NextGreaterElement case1({ 5, 5, 5 });
+    case1.printResult();
 
-    vector<int> nums2 = { 1, 2, 3, 4 };
-    printVector(nextGreaterElements(nums2));
+    NextGreaterElement case2({ 1, 2, 3, 4 });
+    case2.printResult();
 
-    vector<int> nums3 = { 3, 1, 2 };
-    printVector(nextGreaterElements(nums3));
+    NextGreaterElement case3({ 3, 1, 2 });
+    case3.printResult();
 
     return 0;
-
+}
     //Time Complexity: O(n) - Each element is pushed and popped at most once
     //Space Complexity: O(n) - The stack can hold up to n indices in the worst case
-}
+
